@@ -1,5 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL_error.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -352,7 +354,21 @@ int main() {
         0
     );
 
+    if (window == NULL) {
+        fprintf(stderr, "SDL_CreateWindow() failed: %s", SDL_GetError());
+        return -1;
+    }
+
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (renderer == NULL) {
+        fprintf(stderr, "SDL_CreateRenderer() failed: %s", SDL_GetError());
+        return -1;
+    }
+
+    if (fopen("font.ttf", "r") == NULL) {
+        fprintf(stderr, "Failed to open font!");
+        return -1;
+    }
     TTF_Font* font = TTF_OpenFont("font.ttf", 32);
 
     initializeGame();
